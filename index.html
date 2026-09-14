@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Imperial Wealth Extraction Sandbox — Lawful Looting by the East India Company</title>
+<style>
+  :root {
+    --bg: #0b1120;
+    --bg-2: #0e1628;
+    --surface: #131c31;
+    --surface-2: #1a2540;
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --text: #ece8dd;
+    --muted: #98a3bb;
+    --faint: #6b7690;
+    --gold: #e3bb62;
+    --gold-soft: rgba(227, 187, 98, 0.14);
+    --rol: #4fd08a;
+    --rol-soft: rgba(79, 208, 138, 0.12);
+    --rbl: #ef6b6b;
+    --rbl-soft: rgba(239, 107, 107, 0.12);
+    --amber: #f2b04a;
+    --amber-soft: rgba(242, 176, 74, 0.14);
+    --radius: 16px;
+    --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.65);
+    --serif: Georgia, "Times New Roman", "Iowan Old Style", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(227, 187, 98, 0.07), transparent 60%),
+      radial-gradient(1000px 600px at -10% 20%, rgba(79, 208, 138, 0.05), transparent 55%),
+      radial-gradient(900px 600px at 60% 110%, rgba(239, 107, 107, 0.05), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  body.no-scroll { overflow: hidden; }
+
+  a { color: var(--gold); }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    backdrop-filter: blur(10px);
+    background: rgba(11, 17, 32, 0.72);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 9px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--gold), #9a7430);
+    color: #151006; font-weight: 700; font-size: 16px;
+    box-shadow: 0 6px 16px -6px rgba(227, 187, 98, 0.7);
+  }
+  .brand-name { font-family: var(--serif); font-weight: 600; font-size: 14.5px; letter-spacing: 0.02em; }
+  .brand-name span { color: var(--gold); }
+  .topbar-tag {
+    font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--border);
+    padding: 5px 10px; border-radius: 999px; white-space: nowrap;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 66px 0 38px; }
+  .hero-kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold); background: var(--gold-soft);
+    border: 1px solid rgba(227, 187, 98, 0.28);
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2rem, 4.6vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    max-width: 21ch;
+    margin-bottom: 18px;
+  }
+  .hero h1 .gold {
+    background: linear-gradient(100deg, #f2d489, var(--gold) 45%, #b07d2c);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-sub { max-width: 70ch; color: var(--muted); font-size: 1.05rem; margin-bottom: 26px; }
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 12px; }
+  .stat {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 16px;
+  }
+  .stat b { font-family: var(--serif); font-size: 1.25rem; color: var(--gold); }
+  .stat span { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+
+  /* ---------- Sections ---------- */
+  section { padding: 44px 0; scroll-margin-top: 76px; }
+  .section-head { margin-bottom: 26px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px; font-weight: 600;
+  }
+  .section-head h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.15; }
+  .section-head p { color: var(--muted); max-width: 74ch; margin-top: 10px; }
+
+  /* ---------- Case study cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .card {
+    position: relative;
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 26px 22px;
+    cursor: pointer; text-align: left; font: inherit; color: inherit;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--accent, var(--gold)); }
+  .card:hover, .card:focus-visible { transform: translateY(-5px); border-color: var(--border-strong); box-shadow: var(--shadow); outline: none; }
+  .card:focus-visible { box-shadow: var(--shadow), 0 0 0 3px var(--accent-soft, var(--gold-soft)); }
+
+  .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .card-icon {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: grid; place-items: center;
+    background: var(--accent-soft, var(--gold-soft)); color: var(--accent, var(--gold));
+  }
+  .card-icon svg { width: 24px; height: 24px; }
+  .card-era { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: right; }
+  .card h3 { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; margin-bottom: 4px; }
+  .card-dates { font-size: 13px; color: var(--accent, var(--gold)); font-weight: 600; margin-bottom: 12px; }
+  .card p.tagline { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+
+  .card-foot { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 16px; gap: 10px; }
+  .cta { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .cta svg { width: 15px; height: 15px; transition: transform 0.25s ease; color: var(--accent, var(--gold)); }
+  .card:hover .cta svg { transform: translateX(4px); }
+
+  .score-duo { display: flex; align-items: center; gap: 7px; }
+  .score-pill { font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+  .score-pill.legal { background: var(--rol-soft); color: var(--rol); border: 1px solid rgba(79, 208, 138, 0.35); }
+  .score-pill.ethics { background: var(--rbl-soft); color: var(--rbl); border: 1px solid rgba(239, 107, 107, 0.35); }
+
+  /* ---------- Comparison: two faces of legality ---------- */
+  .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .panel {
+    border-radius: var(--radius); border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    padding: 28px; position: relative; overflow: hidden;
+  }
+  .panel.legal { border-top: 3px solid var(--rol); }
+  .panel.substantive { border-top: 3px solid var(--rbl); }
+  .panel-head { margin-bottom: 16px; }
+  .panel-head .eyebrow { margin-bottom: 4px; }
+  .panel.legal .panel-head .eyebrow { color: var(--rol); }
+  .panel.substantive .panel-head .eyebrow { color: var(--rbl); }
+  .panel h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; }
+  .panel .def { font-size: 0.98rem; font-style: italic; border-left: 3px solid var(--rol); padding: 4px 0 4px 14px; margin-bottom: 20px; }
+  .panel.substantive .def { border-color: var(--rbl); }
+
+  .pillars { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .pillar {
+    display: flex; gap: 13px; align-items: flex-start; padding: 13px 14px;
+    border-radius: 12px; background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .pillar:hover { transform: translateX(3px); }
+  .panel.legal .pillar:hover { border-color: rgba(79, 208, 138, 0.4); background: var(--rol-soft); }
+  .panel.substantive .pillar:hover { border-color: rgba(239, 107, 107, 0.4); background: var(--rbl-soft); }
+  .pillar-num {
+    flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+    display: grid; place-items: center; font-family: var(--serif); font-size: 13px; font-weight: 700;
+  }
+  .panel.legal .pillar-num { background: var(--rol-soft); color: var(--rol); border: 1px solid rgba(79, 208, 138, 0.35); }
+  .panel.substantive .pillar-num { background: var(--rbl-soft); color: var(--rbl); border: 1px solid rgba(239, 107, 107, 0.35); }
+  .pillar h4 { font-size: 0.98rem; font-weight: 600; margin-bottom: 2px; }
+  .pillar p { font-size: 0.86rem; color: var(--muted); }
+
+  .test { margin-top: 20px; font-size: 0.88rem; color: var(--muted); padding: 12px 14px; border-radius: 10px; background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--border-strong); }
+  .test b { color: var(--text); }
+  .panel.legal .test b { color: var(--rol); }
+  .panel.substantive .test b { color: var(--rbl); }
+
+  /* ---------- Ledger ---------- */
+  .ledger-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 20px; }
+  .ledger-panel { border-radius: var(--radius); border: 1px solid var(--border); background: linear-gradient(180deg, var(--surface), var(--bg-2)); padding: 26px; }
+  .ledger-panel h3 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .ledger-panel .sub { color: var(--muted); font-size: 0.88rem; margin: 6px 0 18px; }
+  .ledger-icon { color: var(--gold); }
+  .ledger-icon svg { width: 22px; height: 22px; }
+
+  /* counters */
+  .counters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .counter { background: rgba(255, 255, 255, 0.025); border: 1px solid var(--border); border-radius: 13px; padding: 14px 15px; }
+  .counter .num { font-family: var(--serif); font-size: 1.75rem; font-weight: 600; color: var(--gold); line-height: 1.1; }
+  .counter .lbl { font-size: 0.76rem; color: var(--muted); margin-top: 5px; }
+
+  /* drain flow */
+  .flow { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .flow-title { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 12px; }
+  .drain-flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; }
+  .flow-step {
+    flex: 1 1 120px; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 11px; padding: 10px 12px; font-size: 0.8rem; color: var(--text);
+    display: flex; flex-direction: column; gap: 2px; min-height: 66px;
+  }
+  .flow-step b { font-size: 0.82rem; }
+  .flow-step span { color: var(--muted); font-size: 0.74rem; }
+  .flow-arrow { display: grid; place-items: center; color: var(--gold); font-size: 18px; padding: 0 2px; animation: arrowGlow 2.2s ease-in-out infinite; }
+  @keyframes arrowGlow { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+  .flow-loop {
+    margin-top: 12px; font-size: 0.82rem; color: var(--muted);
+    display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+    background: var(--gold-soft); border: 1px dashed rgba(227, 187, 98, 0.4); border-radius: 10px;
+  }
+  .flow-loop b { color: var(--gold); }
+
+  /* artifact ledger */
+  .artifact-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .atab {
+    display: inline-flex; align-items: center; gap: 8px; font: inherit;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    background: var(--bg-2); border: 1px solid var(--border);
+    padding: 8px 13px; border-radius: 999px; cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .atab:hover { color: var(--text); border-color: var(--border-strong); }
+  .atab.active { color: var(--text); border-color: var(--gold); background: var(--gold-soft); }
+  .atab .gem { font-size: 14px; }
+
+  .artifact-card { border: 1px solid var(--border); border-radius: 14px; background: rgba(255, 255, 255, 0.02); padding: 18px 18px 16px; }
+  .artifact-card h4 { font-family: var(--serif); font-size: 1.28rem; font-weight: 600; }
+  .artifact-meta { font-size: 12.5px; color: var(--gold); font-weight: 600; margin: 3px 0 2px; }
+  .artifact-now { font-size: 12px; color: var(--faint); margin-bottom: 12px; }
+  .artifact-mech { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; }
+  .artifact-mech b { color: var(--text); }
+
+  .dual { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .dual-meter .m-top { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 5px; }
+  .dual-meter .m-top .m-name { color: var(--muted); }
+  .dual-meter .m-top .m-val { font-family: var(--serif); font-weight: 700; }
+  .dual-meter .m-track { height: 9px; border-radius: 999px; overflow: hidden; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border); }
+  .dual-meter .m-fill { height: 100%; width: 0; border-radius: 999px; transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+  .dual-meter.legal .m-fill { background: var(--rol); }
+  .dual-meter.legal .m-val { color: var(--rol); }
+  .dual-meter.ethics .m-fill { background: var(--rbl); }
+  .dual-meter.ethics .m-val { color: var(--rbl); }
+
+  .artifact-quote { margin-top: 14px; font-size: 0.85rem; font-style: italic; color: var(--gold); border-left: 3px solid var(--gold); padding: 2px 0 2px 12px; }
+
+  /* ---------- Footer ---------- */
+  footer { margin-top: 40px; padding: 34px 0 60px; border-top: 1px solid var(--border); color: var(--faint); font-size: 0.83rem; }
+  footer .inner { display: flex; flex-direction: column; gap: 8px; }
+
+  /* ---------- Modal ---------- */
+  .modal {
+    position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 22px;
+    background: rgba(5, 8, 16, 0.72); backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+  }
+  .modal.open { opacity: 1; visibility: visible; pointer-events: auto; }
+  .modal-card {
+    width: min(880px, 100%); max-height: 88vh; overflow-y: auto;
+    background: linear-gradient(180deg, #141d35, #10182a);
+    border: 1px solid var(--border-strong); border-radius: 18px;
+    padding: 30px 30px 22px; position: relative;
+    transform: translateY(18px) scale(0.985);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.85);
+  }
+  .modal.open .modal-card { transform: translateY(0) scale(1); }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px; width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--border-strong); transform: rotate(90deg); }
+
+  .modal-head { padding-right: 48px; margin-bottom: 20px; }
+  .modal-era {
+    display: inline-block; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold); background: var(--gold-soft); border: 1px solid rgba(227, 187, 98, 0.3);
+    padding: 4px 11px; border-radius: 999px; margin-bottom: 12px;
+  }
+  .modal-head h2 { font-family: var(--serif); font-size: clamp(1.45rem, 3.5vw, 2.1rem); font-weight: 600; }
+  .modal-head .tag { color: var(--muted); margin-top: 6px; }
+
+  .modal-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+  .modal-dual .m-track { height: 12px; }
+  .modal-dual .dual-meter .m-top { font-size: 12px; }
+  .modal-dual .dual-meter .m-top .m-val { font-size: 1.35rem; }
+
+  .verdict {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px 16px; border-radius: 12px; margin-bottom: 20px;
+    border: 1px solid var(--border); background: rgba(255, 255, 255, 0.03);
+    opacity: 0; transform: translateY(8px); transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .verdict.show { opacity: 1; transform: none; }
+  .vbadge {
+    flex: 0 0 auto; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .vbadge.rol { background: var(--rol-soft); color: var(--rol); border: 1px solid rgba(79, 208, 138, 0.4); }
+  .vbadge.mixed { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(242, 176, 74, 0.4); }
+  .vbadge.rbl { background: var(--rbl-soft); color: var(--rbl); border: 1px solid rgba(239, 107, 107, 0.4); }
+  .verdict p { color: var(--muted); font-size: 0.93rem; flex: 1 1 320px; }
+  .verdict p b { color: var(--text); }
+
+  .analysis-label { display: flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-weight: 700; }
+  .analysis-label .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.35; transform: scale(0.7);} }
+
+  .overview { color: var(--text); font-size: 1rem; line-height: 1.75; min-height: 4em; border-left: 3px solid var(--gold); padding-left: 16px; margin-bottom: 22px; }
+  .overview .caret { display: inline-block; width: 2px; height: 1.05em; background: var(--gold); margin-left: 2px; vertical-align: -0.15em; animation: blink 0.85s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .skip { display: inline-block; margin: 4px 0 0 16px; font-size: 12px; color: var(--faint); cursor: pointer; letter-spacing: 0.03em; }
+  .skip:hover { color: var(--gold); }
+
+  .columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .col { border-radius: 14px; padding: 18px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); }
+  .col h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .col-rol { border-top: 3px solid var(--rol); }
+  .col-rol h4 { color: var(--rol); }
+  .col-rbl { border-top: 3px solid var(--rbl); }
+  .col-rbl h4 { color: var(--rbl); }
+  .col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .col li { position: relative; padding-left: 20px; font-size: 0.9rem; color: var(--muted); }
+  .col-rol li::before { content: "⚖"; position: absolute; left: 0; top: 1px; color: var(--rol); font-size: 11px; }
+  .col-rbl li::before { content: "⚠"; position: absolute; left: 0; top: 1px; color: var(--rbl); font-size: 11px; }
+
+  .modal-foot { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12px; color: var(--faint); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+  .fade-up { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-up.show { opacity: 1; transform: none; }
+
+  /* ---------- Imperial Defense (justification modules) ---------- */
+  .defense-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .dtab {
+    display: inline-flex; align-items: center; gap: 9px; font: inherit;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    background: var(--bg-2); border: 1px solid var(--border);
+    padding: 9px 14px; border-radius: 12px; cursor: pointer; text-align: left;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .dtab:hover { color: var(--text); border-color: var(--border-strong); }
+  .dtab.active { color: var(--text); border-color: var(--gold); background: var(--gold-soft); }
+  .dtab-num {
+    flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px;
+    display: grid; place-items: center;
+    font-family: var(--serif); font-size: 11px; font-weight: 700; color: var(--gold);
+    background: var(--gold-soft); border: 1px solid rgba(227, 187, 98, 0.35);
+  }
+  .defense-panel {
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    padding: 26px;
+  }
+  .defense-panel::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+    background: linear-gradient(90deg, var(--rol), var(--gold), var(--rbl));
+  }
+  .defense-head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+  .defense-icon {
+    flex: 0 0 auto; width: 52px; height: 52px; border-radius: 13px;
+    display: grid; place-items: center; font-size: 24px;
+    background: var(--gold-soft); border: 1px solid rgba(227, 187, 98, 0.3);
+  }
+  .defense-head h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 600; }
+  .defense-tagline { color: var(--muted); font-size: 0.92rem; margin-top: 2px; }
+  .defense-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+  .defense-col { border-radius: 13px; padding: 18px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); }
+  .defense-col h4 { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .defense-col.just { border-top: 3px solid var(--rol); }
+  .defense-col.just h4 { color: var(--rol); }
+  .defense-col.effect { border-top: 3px solid var(--rbl); }
+  .defense-col.effect h4 { color: var(--rbl); }
+  .defense-col p { font-size: 0.92rem; color: var(--muted); }
+  .defense-col p b { color: var(--text); }
+  .defense-instruments { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .di-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); font-weight: 700; margin-right: 4px; }
+  .di-pill {
+    font-size: 12px; color: var(--gold); background: var(--gold-soft);
+    border: 1px solid rgba(227, 187, 98, 0.3); padding: 5px 11px; border-radius: 999px;
+  }
+  .defense-paradox {
+    font-size: 0.95rem; font-style: italic; color: var(--gold);
+    border-left: 3px solid var(--gold); padding: 4px 0 4px 14px;
+  }
+  @media (max-width: 700px) { .defense-cols { grid-template-columns: 1fr; } }
+
+  /* ---------- Wealth drain headline + British Museum Act card ---------- */
+  .drain-headline {
+    border: 1px solid rgba(227, 187, 98, 0.32);
+    background: linear-gradient(180deg, rgba(227, 187, 98, 0.09), rgba(227, 187, 98, 0.02));
+    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  }
+  .dh-eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
+  .dh-number { font-family: var(--serif); font-size: clamp(2.7rem, 6vw, 3.7rem); font-weight: 600; color: var(--gold); line-height: 1.05; margin: 6px 0 2px; }
+  .dh-number .dh-unit { font-size: 0.52em; color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .dh-caption { font-size: 0.88rem; color: var(--muted); margin-bottom: 12px; }
+  .dh-source { font-size: 0.85rem; color: var(--muted); padding: 10px 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 14px; }
+  .dh-source b { color: var(--text); }
+  .dh-scale { margin-bottom: 12px; }
+  .dh-track { height: 12px; border-radius: 999px; overflow: hidden; background: rgba(239, 107, 107, 0.25); border: 1px solid var(--border-strong); }
+  .dh-fill { height: 100%; width: 0; background: linear-gradient(90deg, #ef6b6b, #f2b04a, #e3bb62); transition: width 2.2s cubic-bezier(0.22, 1, 0.36, 1); }
+  .dh-scale-labels { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 6px; }
+  .dh-context { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .act-card {
+    margin-top: 18px;
+    border: 1px solid rgba(227, 187, 98, 0.35);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(227, 187, 98, 0.07), rgba(227, 187, 98, 0.02));
+    padding: 18px;
+  }
+  .act-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .act-icon { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center; font-size: 22px; background: var(--gold-soft); border: 1px solid rgba(227, 187, 98, 0.3); }
+  .act-head h4 { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+  .act-sub { font-size: 0.82rem; color: var(--muted); }
+  .act-text { font-size: 0.9rem; color: var(--muted); margin-bottom: 14px; }
+  .act-text b { color: var(--text); }
+  .act-card .dual { margin-bottom: 14px; }
+  .act-note { font-size: 0.86rem; color: var(--muted); border-left: 3px solid var(--gold); padding: 2px 0 2px 12px; margin-bottom: 12px; }
+  .act-note b { color: var(--gold); }
+  .act-paradox { font-size: 0.85rem; font-style: italic; color: var(--gold); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 940px) {
+    .ledger-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .columns { grid-template-columns: 1fr; }
+    .modal-dual { grid-template-columns: 1fr; }
+    .dual { grid-template-columns: 1fr; }
+    .hero { padding-top: 48px; }
+  }
+  @media (max-width: 560px) {
+    .topbar-tag { display: none; }
+    .modal-card { padding: 22px 18px 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ======================= TOP BAR ======================= -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">⚖</div>
+        <div class="brand-name">Imperial Wealth Extraction <span>Sandbox</span></div>
+      </div>
+      <div class="topbar-tag">Lawful Looting by the East India Company</div>
+    </div>
+  </header>
+
+  <!-- ======================= HERO ======================= -->
+  <div class="hero">
+    <div class="container">
+      <span class="hero-kicker">◈ A corporate-legal case study dashboard · 1600–1858</span>
+      <h1>When looting was <span class="gold">perfectly lawful</span> — the East India Company, audited.</h1>
+      <p class="hero-sub">
+        For two and a half centuries a London joint-stock company governed millions of people, collected their
+        taxes, commanded a private army and carried their treasures home — all under <strong>formally valid
+        English law</strong>. This sandbox audits three corporate-legal case studies against two axes:
+        <strong>Formal Domestic Legality</strong> (was it lawful on paper?) and <strong>Substantive Rule of
+        Law / Ethics</strong> (was it just, consensual and equal?). Open any case file, or scroll to the
+        <em>Wealth Drain &amp; Artifact Ledger</em> to tally the extraction.
+      </p>
+      <div class="stats">
+        <div class="stat"><b>258</b><span>years of Company rule (1600–1858)</span></div>
+        <div class="stat"><b>3</b><span>corporate-legal case studies</span></div>
+        <div class="stat"><b>≈$45T</b><span>est. wealth drain, 1765–1938</span></div>
+        <div class="stat"><b>2</b><span>axes of legality</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ======================= CASE STUDIES ======================= -->
+    <section id="cases" aria-label="Case studies">
+      <div class="section-head">
+        <div class="eyebrow">01 · The Case Studies</div>
+        <h2>Three corporate-legal case files</h2>
+        <p>Each card opens an analyzer-style case file scoring the episode on both axes: its
+        <strong>Formal Domestic Legality</strong> (usually near-perfect) and its
+        <strong>Substantive Rule of Law / Ethics</strong> (usually catastrophic).</p>
+      </div>
+      <div class="cards" id="cards"><!-- rendered by JS --></div>
+    </section>
+
+    <!-- ======================= TWO FACES OF LEGALITY ======================= -->
+    <section id="frameworks" aria-label="Two faces of legality">
+      <div class="section-head">
+        <div class="eyebrow">02 · The Frameworks</div>
+        <h2>Two faces of legality</h2>
+        <p>The Company's story hinges on the gap between these two standards. Hover each pillar for its meaning — then watch the case files and ledger test every episode against both.</p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="panel legal">
+          <div class="panel-head">
+            <div class="eyebrow">Lawful on paper</div>
+            <h3>Formal Domestic Legality</h3>
+          </div>
+          <p class="def">Everything the Company did carried a charter, a statute, a treaty or a receipt — valid under the law of the day. This is rule <em>by</em> law at its most refined.</p>
+          <ul class="pillars">
+            <li class="pillar">
+              <span class="pillar-num">I</span>
+              <div><h4>Chartered authority</h4><p>Royal charters and Acts of Parliament conferred monopoly, coinage, armies and territory as lawful delegations of sovereign power.</p></div>
+            </li>
+            <li class="pillar">
+              <span class="pillar-num">II</span>
+              <div><h4>Statutory form</h4><p>Treaties, prize rules and revenue regulations put every extraction into written, sealed, enforceable legal form.</p></div>
+            </li>
+            <li class="pillar">
+              <span class="pillar-num">III</span>
+              <div><h4>Contractual precision</h4><p>Bills of sale, itemized ledgers and signed distribution lists — meticulous paperwork for every transfer.</p></div>
+            </li>
+            <li class="pillar">
+              <span class="pillar-num">IV</span>
+              <div><h4>Jurisdictional cover</h4><p>Company courts and the home legal system together legitimized corporate sovereignty abroad.</p></div>
+            </li>
+          </ul>
+          <div class="test"><b>The test:</b> is there a document? — almost always, yes.</div>
+        </div>
+
+        <div class="panel substantive">
+          <div class="panel-head">
+            <div class="eyebrow">Just in substance</div>
+            <h3>Substantive Rule of Law / Ethics</h3>
+          </div>
+          <p class="def">Law is only law in the full sense when it rests on consent, treats everyone as equal, and protects rather than extracts. By this standard, the paperwork proves nothing.</p>
+          <ul class="pillars">
+            <li class="pillar">
+              <span class="pillar-num">I</span>
+              <div><h4>Consent of the governed</h4><p>Legitimacy requires the governed to be able to shape and question the law — not be ruled by a distant board.</p></div>
+            </li>
+            <li class="pillar">
+              <span class="pillar-num">II</span>
+              <div><h4>Equality before the law</h4><p>Those the law taxed and dispossessed had no standing in the courts that ruled them.</p></div>
+            </li>
+            <li class="pillar">
+              <span class="pillar-num">III</span>
+              <div><h4>Protection, not extraction</h4><p>Law must guard life, liberty and culture — not drain them into a shareholder's ledger.</p></div>
+            </li>
+            <li class="pillar">
+              <span class="pillar-num">IV</span>
+              <div><h4>No plunder, no duress</h4><p>A taking signed by a child sovereign at gunpoint, or seized from a dead ruler, is not justice however tidy the filing.</p></div>
+            </li>
+          </ul>
+          <div class="test"><b>The test:</b> would it be lawful if done to us? — almost always, no.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= WEALTH DRAIN & ARTIFACT LEDGER ======================= -->
+    <section id="ledger" aria-label="Wealth drain and artifact ledger">
+      <div class="section-head">
+        <div class="eyebrow">03 · The Ledger</div>
+        <h2>Wealth Drain &amp; Artifact Ledger</h2>
+        <p>A living tally of what the law moved out of India — wealth first, then the things wealth couldn't measure. Toggle an artifact to see its two scores side by side.</p>
+      </div>
+
+      <div class="ledger-grid">
+
+        <!-- ===== Wealth drain ===== -->
+        <div class="ledger-panel">
+          <h3><span class="ledger-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M5 7l1.5 13h11L19 7M9 7a3 3 0 0 1 6 0"/></svg>
+          </span>Wealth Drain</h3>
+          <p class="sub">Estimated extraction, animated from historical scholarship. Figures are rounded estimates.</p>
+
+          <div class="drain-headline" id="drain-headline">
+            <span class="dh-eyebrow">The definitive figure</span>
+            <div class="dh-number">$<span id="dh-num">0</span><span class="dh-unit">trillion</span></div>
+            <p class="dh-caption">estimated wealth siphoned from India, 1765–1938</p>
+            <p class="dh-source">Based on economist <b>Utsa Patnaik</b>'s research tracking India's <b>export surplus</b>, compounded at ~5% interest across 173 years of colonial rule — the single largest transfer in economic history.</p>
+            <div class="dh-scale">
+              <div class="dh-track"><div class="dh-fill" id="dh-fill"></div></div>
+              <div class="dh-scale-labels"><span>1765 · Diwani</span><span>1938 · end of the drain</span></div>
+            </div>
+            <div class="dh-context">
+              <span class="di-pill">≈13× the UK's annual GDP today</span>
+              <span class="di-pill">financed Britain's Industrial Revolution</span>
+              <span class="di-pill">extracted under lawful title</span>
+            </div>
+          </div>
+
+          <div class="counters" id="counters"></div>
+
+          <div class="flow">
+            <div class="flow-title">The Diwani loop · the lawful drain</div>
+            <div class="drain-flow">
+              <div class="flow-step"><b>1 · Diwani (1765)</b><span>legal right to tax Bengal, Bihar &amp; Orissa</span></div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step"><b>2 · Tax revenues</b><span>collected from ~20M people under Company law</span></div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step"><b>3 · Buys Indian goods</b><span>textiles, saltpetre, opium — no British silver needed</span></div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step"><b>4 · Ships to Britain</b><span>cargo financed 100% by Indian taxes</span></div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step"><b>5 · Profits &amp; Home Charges</b><span>repatriated to London shareholders &amp; the state</span></div>
+            </div>
+            <div class="flow-loop"><b>↻ In perpetuity:</b> Indian revenues financed their own extraction — year after year, the loop replenished itself.</div>
+          </div>
+        </div>
+
+        <!-- ===== Artifact ledger ===== -->
+        <div class="ledger-panel">
+          <h3><span class="ledger-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 9l3 12M15 9l-3 12"/></svg>
+          </span>Artifact Ledger</h3>
+          <p class="sub">Toggle an artifact. Each was removed under meticulous legal form — scored against substantive justice.</p>
+          <div class="artifact-tabs" id="artifact-tabs"></div>
+          <div class="artifact-card" id="artifact-card"></div>
+
+          <div class="act-card" id="act-card">
+            <div class="act-head">
+              <span class="act-icon">🏛</span>
+              <div>
+                <h4>The Ultimate Legal Shield: The British Museum Act of 1963</h4>
+                <p class="act-sub">A modern statute that keeps colonial-era acquisitions frozen in place</p>
+              </div>
+            </div>
+            <p class="act-text">
+              <b>Section 5</b> legally forbids the Museum's Board of Trustees from disposing of —
+              "deaccessioning" — any object in its permanent collections. The only permitted
+              exceptions are narrow: <b>physical duplicates</b>, printed matter made after 1850, or
+              objects <b>"unfit to be retained"</b> (effectively ruined). For everything else, removal
+              is not merely discouraged — it is <b>legally prohibited</b>.
+            </p>
+            <div class="dual">
+              <div class="dual-meter legal">
+                <div class="m-top"><span class="m-name">Formal Domestic Legality</span><span class="m-val">0%</span></div>
+                <div class="m-track"><div class="m-fill act-fill" data-width="100"></div></div>
+              </div>
+              <div class="dual-meter ethics">
+                <div class="m-top"><span class="m-name">Substantive Rule of Law / Ethics</span><span class="m-val">0%</span></div>
+                <div class="m-track"><div class="m-fill act-fill" data-width="10"></div></div>
+              </div>
+            </div>
+            <p class="act-note">
+              The legal paradox: a 1963 statute of a sovereign parliament is used to freeze the spoils
+              of an earlier empire. The <b>Rosetta Stone</b> and the <b>Benin Bronzes</b> sit in the
+              British Museum; the <b>Koh-i-Noor</b> sits with the Crown Jewels at the Tower of London.
+              All of them now lie beyond the reach of restitution — under present domestic law, returning
+              them is <b>literally illegal</b>.
+            </p>
+            <div class="act-paradox">Formal legality, deployed as a permanent lock on looted heritage.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================= THE IMPERIAL DEFENSE ======================= -->
+    <section id="defense" aria-label="The Imperial Defense">
+      <div class="section-head">
+        <div class="eyebrow">04 · The Imperial Defense</div>
+        <h2>The Imperial Defense: How Domestic Law Justified Subjugation</h2>
+        <p>Every act of extraction in this sandbox carried a domestic legal story that made it look like a benefit.
+        These three modules expose how British law narrated conquest as charity, hierarchy as pluralism, and force as contract —
+        the justifications that kept the system lawful at home while it subjugated abroad.</p>
+      </div>
+      <div class="defense-tabs" id="defense-tabs" role="tablist" aria-label="Imperial defense modules"></div>
+      <div class="defense-panel" id="defense-panel" role="tabpanel" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer>
+    <div class="container inner">
+      <div><strong style="color:var(--muted)">The Imperial Wealth Extraction Sandbox</strong> — Lawful Looting by the East India Company</div>
+      <div>An educational dashboard. Wealth figures are rounded estimates drawn from scholarly work (notably the "drain of wealth" tradition of Dadabhai Naoroji and modern estimates such as Utsa Patnaik's) and vary widely between studies. The "analyzer" verdicts are pre-written editorial content presented in a simulated AI style; they are not legal advice and do not reflect the position of any institution.</div>
+    </div>
+  </footer>
+
+  <!-- ======================= MODAL ======================= -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+
+      <div class="modal-head">
+        <span class="modal-era" id="modal-era"></span>
+        <h2 id="modal-title"></h2>
+        <p class="tag" id="modal-tagline"></p>
+      </div>
+
+      <div class="modal-dual">
+        <div class="dual-meter legal">
+          <div class="m-top"><span class="m-name">Formal Domestic Legality</span><span class="m-val" id="m-legal">0%</span></div>
+          <div class="m-track"><div class="m-fill" id="m-legal-fill"></div></div>
+        </div>
+        <div class="dual-meter ethics">
+          <div class="m-top"><span class="m-name">Substantive Rule of Law / Ethics</span><span class="m-val" id="m-ethics">0%</span></div>
+          <div class="m-track"><div class="m-fill" id="m-ethics-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="verdict" id="verdict">
+        <span class="vbadge" id="vbadge"></span>
+        <p id="vtext"></p>
+      </div>
+
+      <div class="analysis">
+        <div class="analysis-label"><span class="dot"></span> Analyzer breakdown</div>
+        <p class="overview" id="overview"></p>
+        <span class="skip" id="skip" role="button" tabindex="0">Skip typing →</span>
+        <div class="columns fade-up" id="columns">
+          <div class="col col-rol">
+            <h4>The legal mechanics (lawful on paper)</h4>
+            <ul id="list-rol"></ul>
+          </div>
+          <div class="col col-rbl">
+            <h4>The substantive reality (rule by law)</h4>
+            <ul id="list-rbl"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <span>Simulated analyzer · educational use only</span>
+        <span id="modal-ref"></span>
+      </div>
+    </div>
+  </div>
+
+  <noscript><p style="padding:20px">This dashboard requires JavaScript to render the case studies and ledger.</p></noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     CASE STUDY DATA
+  ============================================================ */
+  var cases = [
+    {
+      id: "charter",
+      era: "1600–1773 · Charter & statute",
+      dates: "Royal Charter 1600 → Regulating Act 1773",
+      title: "The Royal Charter & the Corporate State",
+      tagline: "A private joint-stock company, armed by domestic law with a monopoly, a mint, an army — and the right to annex.",
+      icon: "charter",
+      accent: "#e3bb62",
+      accentSoft: "rgba(227, 187, 98, 0.14)",
+      formal: 95,
+      ethics: 12,
+      verdictLabel: "Rule by Law — chartered",
+      verdictText: "Corporate conquest was not a breach of English law; it was English law's own product. Charter, statute and Crown combined to make a private corporation a sovereign power — lawful at home, unconscionable where it happened.",
+      ref: "Royal Charter, 31 Dec 1600 · Regulating Act 1773 (13 Geo. 3 c. 63)",
+      overview: "Chartered by Elizabeth I on 31 December 1600, the East India Company was a private joint-stock corporation — yet successive royal charters armed it with powers no company should hold: a monopoly on all English trade east of the Cape, the right to mint coinage (from 1677), to wage war, raise armies and administer justice over its own settlements. After Plassey (1757) the Company annexed territory outright, and by the early 1800s it commanded a private army of some 260,000 men — larger than the British Army itself. The Regulating Act 1773, Parliament's first attempt at oversight, did not dissolve this corporate state; it ratified it, installing a Governor-General and a Supreme Court at Calcutta while the Company kept its armies, its revenues and its conquests. Corporate conquest, in other words, was not an outlaw act — it was the law's own product.",
+      toward: [
+        "Royal charters (1600, 1609, 1661, 1683) delegated monopoly, coinage, war powers and justice — each a lawful grant of sovereign authority.",
+        "The Regulating Act 1773 embedded Company rule in statute: a Governor-General and a Supreme Court at Calcutta, all under English law.",
+        "Directors and shareholders answered to English courts and Parliament — a fully legal corporate state.",
+        "Every annexation was dressed in treaty and statute, defensible in a London courtroom."
+      ],
+      remain: [
+        "No consent of the governed: millions in India were ruled by a London board they could never petition or elect.",
+        "The chartered monopoly outlawed Indian merchants and weavers — institutionalized inequality by statute.",
+        "A private army, paid from Indian revenues, annexed sovereign states at the directors' discretion.",
+        "Parliament regulated but never repudiated conquest — domestic law laundered empire."
+      ]
+    },
+    {
+      id: "diwani",
+      era: "1765 · Treaty of Allahabad",
+      dates: "Diwani of Bengal, Bihar & Orissa · 12 August 1765",
+      title: "The Diwani Rights & Systemic Wealth Extraction",
+      tagline: "The lawful right to tax twenty million people — turned into a self-replenishing wealth pump.",
+      icon: "coin",
+      accent: "#4fd08a",
+      accentSoft: "rgba(79, 208, 138, 0.12)",
+      formal: 90,
+      ethics: 4,
+      verdictLabel: "Rule by Law — institutionalized",
+      verdictText: "The Diwani turned taxation into a wealth drain. Legal title was impeccable; the human cost was catastrophic — and the revenues rose even as famine killed millions.",
+      ref: "Treaty of Allahabad, 12 Aug 1765 · Naoroji, Poverty and Un-British Rule in India (1901)",
+      overview: "On 12 August 1765, the defeated Mughal Emperor Shah Alam II signed the Treaty of Allahabad, conferring on the East India Company the Diwani — the formal, lawful right to collect the land revenues of Bengal, Bihar and Orissa. Overnight the Company became tax collector for some twenty million people. The legal loop that followed was elegantly circular: Indian taxes, collected under the Company's new legal authority, were used to buy Indian goods — textiles, saltpetre, opium — which were shipped to Britain, so that British silver was no longer needed at all. Dadabhai Naoroji would later name this the 'drain of wealth'; one influential modern estimate puts the cumulative drain at roughly $45 trillion in today's money between 1765 and 1938. The starkest proof that this was rule by law, not the rule of law, came in 1770, when famine killed an estimated third of Bengal — perhaps ten million people — while the Company raised its revenue demands. The taxation was perfectly lawful. The outcome was ruinous.",
+      toward: [
+        "The Treaty of Allahabad conferred formal, sealed, documented title to the Diwani.",
+        "Revenue was collected under published regulations and adjudicated in the Company's own courts.",
+        "The Permanent Settlement (1793) gave the system a settled legal architecture.",
+        "On paper, every rupee moved through receipts, ledgers and audit trails."
+      ],
+      remain: [
+        "Taxation without representation, consent, or benefit to those taxed.",
+        "Revenues bought goods for export rather than relief — and rose even as the 1770 famine killed millions.",
+        "The 'drain of wealth': Indian taxes financed Britain's industrial expansion.",
+        "Sovereignty was transferred under military duress — legality as a veneer on conquest."
+      ]
+    },
+    {
+      id: "artifacts",
+      era: "1799 & 1849 · Prize & treaty",
+      dates: "Seringapatam 1799 · Treaty of Lahore 1849",
+      title: "The Lawful Looting of Artifacts & Cultural Plunder",
+      tagline: "Treaties, prize lists and bills of sale — meticulous legal form, emptied of justice.",
+      icon: "gem",
+      accent: "#ef6b6b",
+      accentSoft: "rgba(239, 107, 107, 0.12)",
+      formal: 88,
+      ethics: 8,
+      verdictLabel: "Rule by Law — contractual",
+      verdictText: "Treaties, prize rules and bills of sale gave plunder the appearance of law. The form was perfect; the justice was absent — and the treasures are still in London.",
+      ref: "Treaty of Lahore, 29 Mar 1849 (Art. III) · Seringapatam Prize Proceedings (1799)",
+      overview: "The removal of India's treasures was scrupulously documented. After Tipu Sultan fell at Seringapatam in 1799, his mechanical 'Tiger' was inventoried in formal prize lists and distributed according to rank — the Company's own committees turning plunder into procedure. Five decades later, the Treaty of Lahore (1849) compelled the ten-year-old Maharaja Duleep Singh to 'surrender' the Koh-i-Noor diamond to Queen Victoria as a clause of an imposed peace. Every acquisition carried treaty articles, bills of sale and itemized ledgers; each was, in the strict domestic sense, legal. Yet behind the paperwork stood military conquest, a child sovereign signing under duress, and the removal of a civilisation's patrimony to London — where the Koh-i-Noor remains in the Crown Jewels and the Tiger sits in the Victoria and Albert Museum. This is the paradox the ledger lays bare: perfect legal form, emptied of any substantive justice.",
+      toward: [
+        "Treaty clauses (Lahore 1849, Art. III), prize committees and bills of sale recorded every acquisition.",
+        "Itemized ledgers and rank-based distribution lists gave plunder a procedural costume.",
+        "Conservation claims presented removal as 'rescue' and 'salvage'.",
+        "Formal title passed under the English law of the day."
+      ],
+      remain: [
+        "The Koh-i-Noor was signed away by a ten-year-old ruler under an imposed treaty.",
+        "The Tiger was seized from a dead sovereign's capital and divided by rank.",
+        "Cultural patrimony removed without consent — and restitution repeatedly refused.",
+        "Perfect paperwork does not make an unjust taking just."
+      ]
+    }
+  ];
+
+  var icons = {
+    charter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M5 8h14"/><path d="M9 12h6M9 15h4"/></svg>',
+    coin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2 0 2.6 6 1.4 6 4 0 1.2-1.3 2-3 2-1.4 0-2.5-.5-3-1.5"/></svg>',
+    gem: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 9l3 12M15 9l-3 12"/></svg>'
+  };
+
+  var arrowIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+  function tone(ethics) { return ethics >= 20 ? "mixed" : "rbl"; }
+
+  /* ============================================================
+     RENDER CASE CARDS
+  ============================================================ */
+  var cardsEl = document.getElementById("cards");
+
+  cases.forEach(function (c) {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "card";
+    card.setAttribute("data-id", c.id);
+    card.style.setProperty("--accent", c.accent);
+    card.style.setProperty("--accent-soft", c.accentSoft);
+    card.setAttribute("aria-label", "Open case file: " + c.title);
+    card.innerHTML =
+      '<div class="card-top">' +
+        '<div class="card-icon">' + icons[c.icon] + '</div>' +
+        '<span class="card-era">' + c.era + '</span>' +
+      '</div>' +
+      '<h3>' + c.title + '</h3>' +
+      '<div class="card-dates">' + c.dates + '</div>' +
+      '<p class="tagline">' + c.tagline + '</p>' +
+      '<div class="card-foot">' +
+        '<span class="cta">Open case file ' + arrowIcon + '</span>' +
+        '<span class="score-duo">' +
+          '<span class="score-pill legal">Legal ' + c.formal + '</span>' +
+          '<span class="score-pill ethics">Ethics ' + c.ethics + '</span>' +
+        '</span>' +
+      '</div>';
+    card.addEventListener("click", function () { openModal(c.id); });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(c.id); }
+    });
+    cardsEl.appendChild(card);
+  });
+
+  /* ============================================================
+     WEALTH DRAIN COUNTERS
+  ============================================================ */
+  var countersData = [
+    { value: 45, decimals: 0, prefix: "$", suffix: "T", label: "Estimated cumulative wealth drain, India → Britain, 1765–1938 (one scholarly estimate)" },
+    { value: 100, decimals: 0, prefix: "", suffix: "%", label: "of Company exports financed by Indian tax revenues after the Diwani" },
+    { value: 3.5, decimals: 1, prefix: "£", suffix: "M/yr", label: "\"Home Charges\" siphoned annually to Britain by the 1850s" },
+    { value: 10, decimals: 0, prefix: "", suffix: "M", label: "estimated deaths in the 1770 Bengal famine — amid rising tax demands" },
+    { value: 260000, decimals: 0, prefix: "", suffix: "", commas: true, label: "peak strength of the Company's private army — larger than Britain's own" }
+  ];
+
+  var countersEl = document.getElementById("counters");
+  var counterSpans = [];
+
+  countersData.forEach(function (cd, i) {
+    var div = document.createElement("div");
+    div.className = "counter";
+    div.innerHTML = '<div class="num" data-target="' + cd.value + '" data-decimals="' + cd.decimals +
+      '" data-prefix="' + cd.prefix + '" data-suffix="' + cd.suffix + '" data-commas="' + (cd.commas ? 1 : 0) + '">' +
+      cd.prefix + '0' + cd.suffix + '</div>' +
+      '<div class="lbl">' + cd.label + '</div>';
+    countersEl.appendChild(div);
+    counterSpans.push(div.querySelector(".num"));
+  });
+
+  function fmt(n, decimals, commas) {
+    var s = n.toFixed(decimals);
+    if (commas) {
+      var parts = s.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      s = parts.join(".");
+    }
+    return s;
+  }
+
+  function animateCounters() {
+    counterSpans.forEach(function (el) {
+      var target = parseFloat(el.getAttribute("data-target"));
+      var decimals = parseInt(el.getAttribute("data-decimals"), 10);
+      var prefix = el.getAttribute("data-prefix");
+      var suffix = el.getAttribute("data-suffix");
+      var commas = el.getAttribute("data-commas") === "1";
+      var dur = 1600, start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefix + fmt(target * eased, decimals, commas) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  var counterObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { animateCounters(); counterObserver.disconnect(); }
+    });
+  }, { threshold: 0.3 });
+  counterObserver.observe(countersEl);
+
+  /* ============================================================
+     ARTIFACT LEDGER
+  ============================================================ */
+  var artifacts = [
+    {
+      id: "kohinoor",
+      gem: "◆",
+      name: "Koh-i-Noor Diamond",
+      meta: "1849 · Treaty of Lahore, Article III",
+      now: "Now: British Crown Jewels · Tower of London",
+      mechanics: "An imposed peace treaty compelled ten-year-old Maharaja Duleep Singh to <b>'surrender' the gem to the Queen of England</b>. One clause of contract — signed under annexation and duress — moved 105.6 carats of history to London.",
+      formal: 92,
+      ethics: 4,
+      quote: "A single treaty clause did the work of a heist."
+    },
+    {
+      id: "tiger",
+      gem: "🐅",
+      name: "Tipu's Tiger",
+      meta: "1799 · Siege of Seringapatam prize",
+      now: "Now: Victoria & Albert Museum · London",
+      mechanics: "Seized after Tipu Sultan's death, the automaton was <b>inventoried by prize committees and allotted by rank</b> — with receipts, itemized ledgers and signed distribution lists from the Company's own officers.",
+      formal: 86,
+      ethics: 9,
+      quote: "Looting with ledgers: procedure as plunder."
+    },
+    {
+      id: "amaravati",
+      gem: "🪨",
+      name: "Amaravati Marbles",
+      meta: "1816–1859 · \"archaeological salvage\"",
+      now: "Now: British Museum · London",
+      mechanics: "Sculptures of the great Buddhist stupa were <b>excavated and removed under Company sanction as 'salvage'</b>, shipped to the India Museum, then folded into the British Museum's collection.",
+      formal: 80,
+      ethics: 14,
+      quote: "\"Rescue\" became removal — sanctioned, shipped, and never returned."
+    }
+  ];
+
+  var tabsEl = document.getElementById("artifact-tabs");
+  var artifactCard = document.getElementById("artifact-card");
+  var activeArtifact = artifacts[0].id;
+
+  function renderArtifactTabs() {
+    artifacts.forEach(function (a) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "atab" + (a.id === activeArtifact ? " active" : "");
+      b.setAttribute("data-id", a.id);
+      b.innerHTML = '<span class="gem">' + a.gem + '</span>' + a.name;
+      b.addEventListener("click", function () { setArtifact(a.id); });
+      tabsEl.appendChild(b);
+    });
+  }
+
+  function meterMarkup(name, cls, val) {
+    return '<div class="dual-meter ' + cls + '">' +
+      '<div class="m-top"><span class="m-name">' + name + '</span><span class="m-val">' + val + '%</span></div>' +
+      '<div class="m-track"><div class="m-fill" data-width="' + val + '"></div></div>' +
+    '</div>';
+  }
+
+  function setArtifact(id) {
+    activeArtifact = id;
+    var a = artifacts.find(function (x) { return x.id === id; });
+    if (!a) return;
+
+    Array.prototype.forEach.call(tabsEl.children, function (t) {
+      t.classList.toggle("active", t.getAttribute("data-id") === id);
+    });
+
+    artifactCard.innerHTML =
+      '<h4>' + a.gem + ' ' + a.name + '</h4>' +
+      '<div class="artifact-meta">' + a.meta + '</div>' +
+      '<div class="artifact-now">' + a.now + '</div>' +
+      '<p class="artifact-mech">' + a.mechanics + '</p>' +
+      '<div class="dual">' +
+        meterMarkup("Formal Domestic Legality", "legal", a.formal) +
+        meterMarkup("Substantive Rule of Law / Ethics", "ethics", a.ethics) +
+      '</div>' +
+      '<div class="artifact-quote">' + a.quote + '</div>';
+
+    /* animate the two meters */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var fills = artifactCard.querySelectorAll(".m-fill");
+        Array.prototype.forEach.call(fills, function (f) {
+          f.style.width = f.getAttribute("data-width") + "%";
+        });
+      });
+    });
+  }
+
+  /* ============================================================
+     MODAL
+  ============================================================ */
+  var modal = document.getElementById("modal");
+  var modalClose = document.getElementById("modal-close");
+  var elEra = document.getElementById("modal-era");
+  var elTitle = document.getElementById("modal-title");
+  var elTagline = document.getElementById("modal-tagline");
+  var mLegal = document.getElementById("m-legal");
+  var mLegalFill = document.getElementById("m-legal-fill");
+  var mEthics = document.getElementById("m-ethics");
+  var mEthicsFill = document.getElementById("m-ethics-fill");
+  var elVerdict = document.getElementById("verdict");
+  var elVbadge = document.getElementById("vbadge");
+  var elVtext = document.getElementById("vtext");
+  var elOverview = document.getElementById("overview");
+  var elColumns = document.getElementById("columns");
+  var elListRol = document.getElementById("list-rol");
+  var elListRbl = document.getElementById("list-rbl");
+  var elSkip = document.getElementById("skip");
+  var elRef = document.getElementById("modal-ref");
+
+  var typing = { timer: null, done: false };
+  var lastTrigger = null;
+
+  function countUp(el, target, dur) {
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / dur);
+      el.textContent = Math.round(target * p) + "%";
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function openModal(id) {
+    var c = cases.find(function (x) { return x.id === id; });
+    if (!c) return;
+
+    lastTrigger = document.activeElement;
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    elEra.textContent = c.era;
+    elTitle.textContent = c.title;
+    elTagline.textContent = c.tagline;
+    elRef.textContent = c.ref;
+
+    elVbadge.textContent = c.verdictLabel;
+    elVbadge.className = "vbadge " + tone(c.ethics);
+    elVtext.innerHTML = "<b>Verdict:</b> " + c.verdictText;
+    elVerdict.classList.remove("show");
+
+    mLegalFill.style.width = "0%";
+    mEthicsFill.style.width = "0%";
+    mLegal.textContent = "0%";
+    mEthics.textContent = "0%";
+
+    elOverview.innerHTML = "";
+    elSkip.style.display = "inline-block";
+
+    elListRol.innerHTML = c.toward.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+    elListRbl.innerHTML = c.remain.map(function (t) { return "<li>" + t + "</li>"; }).join("");
+    elColumns.classList.remove("show");
+
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("no-scroll");
+    modalClose.focus();
+
+    setTimeout(function () {
+      mLegalFill.style.width = c.formal + "%";
+      mEthicsFill.style.width = c.ethics + "%";
+      countUp(mLegal, c.formal, 1200);
+      countUp(mEthics, c.ethics, 1200);
+    }, 250);
+
+    setTimeout(function () { elVerdict.classList.add("show"); }, 400);
+
+    if (reduced) {
+      elOverview.textContent = c.overview;
+      setTimeout(function () { elColumns.classList.add("show"); }, 120);
+    } else {
+      elOverview.innerHTML = '<span class="caret"></span>';
+      setTimeout(function () { typeOverview(c.overview, 8); }, 650);
+    }
+  }
+
+  function typeOverview(text, speed) {
+    var i = 0;
+    elOverview.innerHTML = "";
+    typing.done = false;
+    clearTimeout(typing.timer);
+    function tick() {
+      if (typing.done) return;
+      if (i <= text.length) {
+        elOverview.innerHTML = text.slice(0, i) + (i < text.length ? '<span class="caret"></span>' : "");
+        i++;
+        typing.timer = setTimeout(tick, speed);
+      } else {
+        typing.done = true;
+        elOverview.innerHTML = text;
+        elSkip.style.display = "none";
+        elColumns.classList.add("show");
+      }
+    }
+    tick();
+  }
+
+  function skipTyping() {
+    if (typing.done) return;
+    typing.done = true;
+    clearTimeout(typing.timer);
+    var c = cases.find(function (x) { return elTitle.textContent === x.title; });
+    if (c) elOverview.textContent = c.overview;
+    elSkip.style.display = "none";
+    elColumns.classList.add("show");
+  }
+
+  function closeModal() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("no-scroll");
+    clearTimeout(typing.timer);
+    typing.done = true;
+    if (lastTrigger && lastTrigger.focus) lastTrigger.focus();
+  }
+
+  modalClose.addEventListener("click", closeModal);
+  elSkip.addEventListener("click", skipTyping);
+  elSkip.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); skipTyping(); }
+  });
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+  });
+
+  /* ============================================================
+     THE IMPERIAL DEFENSE (justification modules)
+  ============================================================ */
+  var defenses = [
+    {
+      id: "civilizing",
+      num: "01",
+      short: "The Civilizing Mission",
+      title: "The \u201cCivilizing Mission\u201d & the Substitution of Law",
+      tagline: "Resource extraction recast, at home, as a benign gift of \u201claw and order.\u201d",
+      icon: "⚖",
+      story: {
+        label: "The domestic justification",
+        text: "At Westminster the Company\u2019s conquests were narrated as moral improvement. The \u201ccivilizing mission\u201d held that British rule was rescuing India from \u201coriental despotism\u201d and raising it toward English liberty. Its chief exhibit was law itself: codified statutes, courts of record, published regulations. Each new court, code and registry was cited in Parliament as proof that the rule was a benefit \u2014 the gift of \u201claw and order\u201d rather than the fact of extraction. On this telling, the introduction of English legal structures transformed conquest into benevolence."
+      },
+      reality: {
+        label: "The structural effect",
+        text: "The same legal structures were the instruments of extraction. The new courts enforced revenue demands, debt and contract claims rather than protecting the colonized; they criminalized customary practice and administered famine rather than alleviating it. \u201cLaw and order\u201d meant order for the Company\u2019s collection machinery \u2014 the substitution of English procedure for indigenous justice, so that dispossession became a documented, court-enforced process."
+      },
+      instruments: ["Regulating Act 1773", "Supreme Court at Calcutta 1774", "Indian Penal Code 1860"],
+      paradox: "Law arrived as a gift \u2014 and immediately began to collect."
+    },
+    {
+      id: "pluralism",
+      num: "02",
+      short: "Legal Pluralism",
+      title: "Domestic Statutes & the Doctrine of Legal Pluralism",
+      tagline: "Separate legal tiers, sold at home as \u201crespect for local cultures.\u201d",
+      icon: "⚖",
+      story: {
+        label: "The domestic justification",
+        text: "Domestically, the colonial legal order was defended as enlightened pluralism. British subjects answered to English law, while \u201cnatives\u201d were left to their \u201cpersonal laws\u201d \u2014 Hindu and Muslim law administered through Company courts. Policymakers framed this as respect for local cultures, even religious tolerance: a deference to ancient custom that a single, uniform English code would have destroyed. Separate legal tiers were presented as a feature, not a hierarchy."
+      },
+      reality: {
+        label: "The structural effect",
+        text: "Pluralism in practice was a ladder, not a harmony. The \u201cpersonal laws\u201d were frozen, selectively codified and interpreted by British judges from orientalist texts, stripped of the living communities that had made and evolved them. Colonized subjects were barred from juries in cases against Europeans, denied the rights of English common law, and reduced to a lower tier of legal personhood in their own land. Pluralism became the machinery of economic subordination \u2014 one set of rules for the colonizers, another for the colonized."
+      },
+      instruments: ["Warren Hastings\u2019 Judicial Plan 1772", "Charter Act 1833 Law Commission", "Jury exclusion \u2014 European vs. native jurisdiction"],
+      paradox: "Respect for custom, codified into subordination."
+    },
+    {
+      id: "sovereignty",
+      num: "03",
+      short: "Manufactured Sovereignty",
+      title: "Formalizing Conquest via Manufactured Sovereignty",
+      tagline: "Declaring inhabited land \u201clegally vacant\u201d \u2014 and treaties extracted at gunpoint.",
+      icon: "🗺",
+      story: {
+        label: "The domestic justification",
+        text: "Annexation was never called conquest in London. Colonial lawyers invoked the doctrine of terra nullius: land not managed under European property norms \u2014 without surveyed boundaries, \u201cimprovement\u201d or Crown-style title \u2014 could be declared legally vacant and lawfully acquired. Forced treaties, meanwhile, were presented to Westminster as mutual, consensual contracts between equal sovereigns, voluntarily signed and therefore binding under the law of nations. Manufactured sovereignty made every taking look like a lawful purchase."
+      },
+      reality: {
+        label: "The structural effect",
+        text: "Inhabited lands were declared empty by legal definition, not by fact. Treaties were signed by defeated rulers under military occupation, by child sovereigns under guardianship, or under the Doctrine of Lapse when no heir \u201cacceptable\u201d to the Company remained. The \u201cmutual contract\u201d was manufactured: consent was extracted at gunpoint, then dressed in the formalities of treaty law to sanctify annexation. Sovereignty was not found \u2014 it was produced, on Company stationery."
+      },
+      instruments: ["Doctrine of Lapse", "Treaty of Lahore 1849", "Terra nullius reasoning in colonial jurisprudence"],
+      paradox: "A signature at gunpoint, filed as a contract."
+    }
+  ];
+
+  var defenseTabsEl = document.getElementById("defense-tabs");
+  var defensePanelEl = document.getElementById("defense-panel");
+  var activeDefense = defenses[0].id;
+
+  function renderDefenseTabs() {
+    defenses.forEach(function (d) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "dtab" + (d.id === activeDefense ? " active" : "");
+      b.setAttribute("data-id", d.id);
+      b.setAttribute("role", "tab");
+      b.innerHTML = '<span class="dtab-num">' + d.num + '</span><span class="dtab-name">' + d.short + '</span>';
+      b.addEventListener("click", function () { setDefense(d.id); });
+      defenseTabsEl.appendChild(b);
+    });
+  }
+
+  function setDefense(id) {
+    activeDefense = id;
+    var d = defenses.find(function (x) { return x.id === id; });
+    if (!d) return;
+    Array.prototype.forEach.call(defenseTabsEl.children, function (t) {
+      t.classList.toggle("active", t.getAttribute("data-id") === id);
+    });
+    defensePanelEl.innerHTML =
+      '<div class="defense-head">' +
+        '<span class="defense-icon">' + d.icon + '</span>' +
+        '<div><h3>' + d.title + '</h3><p class="defense-tagline">' + d.tagline + '</p></div>' +
+      '</div>' +
+      '<div class="defense-cols">' +
+        '<div class="defense-col just">' +
+          '<h4>' + d.story.label + '</h4>' +
+          '<p>' + d.story.text + '</p>' +
+        '</div>' +
+        '<div class="defense-col effect">' +
+          '<h4>' + d.reality.label + '</h4>' +
+          '<p>' + d.reality.text + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="defense-instruments">' +
+        '<span class="di-label">Key legal instruments</span>' +
+        d.instruments.map(function (i) { return '<span class="di-pill">' + i + '</span>'; }).join("") +
+      '</div>' +
+      '<div class="defense-paradox">' + d.paradox + '</div>';
+  }
+
+  /* ============================================================
+     INIT
+  ============================================================ */
+  renderArtifactTabs();
+  setArtifact(activeArtifact);
+  renderDefenseTabs();
+  setDefense(activeDefense);
+
+  /* --- Wealth drain headline animation (scroll-triggered) --- */
+  var dhEl = document.getElementById("drain-headline");
+  var dhNum = document.getElementById("dh-num");
+  var dhFill = document.getElementById("dh-fill");
+  var dhObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) {
+        dhFill.style.width = "100%";
+        var start = null, dur = 1800;
+        function step(ts) {
+          if (!start) start = ts;
+          var p = Math.min(1, (ts - start) / dur);
+          dhNum.textContent = String(Math.round(45 * p));
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+        dhObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.25 });
+  if (dhEl) dhObserver.observe(dhEl);
+
+  /* --- British Museum Act 1963 card meters (scroll-triggered) --- */
+  var actCard = document.getElementById("act-card");
+  var actObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) {
+        var fills = actCard.querySelectorAll(".act-fill");
+        Array.prototype.forEach.call(fills, function (f) {
+          f.style.width = f.getAttribute("data-width") + "%";
+        });
+        var vals = actCard.querySelectorAll(".m-val");
+        if (vals.length >= 2) {
+          countUp(vals[0], 100, 1200);
+          countUp(vals[1], 10, 1200);
+        }
+        actObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  if (actCard) actObserver.observe(actCard);
+})();
+</script>
+</body>
+</html>
